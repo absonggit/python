@@ -24,4 +24,3 @@ else:
         print(order_list)
     print("balance:\033[31;1m%s\033[0m" % balance)
     print("=".center(50, '='))
-print("aaa")
