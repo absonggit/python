@@ -4,7 +4,12 @@ count = 0
 file = 'deny_user_list.txt'
 
 with open(file, "r+", encoding="utf-8") as of:
-    for word in (line.strip() for line in of):
+    def fib():              # 生成器
+        for line in of:
+            yield line.strip()
+        return 'done'
+    # for word in (line.strip() for line in of):  # 生成器
+    for word in fib():
         if name == word:
             print(name, "User locked!")
             break
