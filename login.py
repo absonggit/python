@@ -1,13 +1,10 @@
 password = "123"
-user_list = []
 name = input("username:")
 count = 0
 file = 'deny_user_list.txt'
 
 with open(file, "r+", encoding="utf-8") as of:
-    for line in of:
-        user_list.append(line.strip())
-
+    user_list = [line.strip() for line in of]
     for word in user_list:
         if name == word:
             print(name, "User locked!")
