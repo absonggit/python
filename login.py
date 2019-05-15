@@ -4,15 +4,14 @@ count = 0
 file = 'deny_user_list.txt'
 
 with open(file, "r+", encoding="utf-8") as of:
-    user_list = [line.strip() for line in of]
-    for word in user_list:
+    for word in (line.strip() for line in of):
         if name == word:
             print(name, "User locked!")
             break
     else:
         while count <= 2:
             if password == input("password:"):
-                print(name, "welcome!")
+                print(name, "Welcome!")
                 break
             else:
                 if count < 2:
