@@ -53,7 +53,7 @@ def timer(func):
         start_time = time.time()
         func()
         stop_time = time.time()
-        print('Runtime: %s' % (stop_time - start_time))
+        print('Execution time: %s' % (stop_time - start_time))
 
     return wrapper
 
