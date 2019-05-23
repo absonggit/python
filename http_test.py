@@ -1,5 +1,5 @@
-from urllib.request import Request, urlopen
-from urllib.error import URLError, HTTPError
+import urllib.request
+import time
 
 responses = {
     100: ('Continue', 'Request received, please continue'),
@@ -43,23 +43,37 @@ responses = {
     504: ('Gateway Timeout', 'The gateway server did not receive a timely response'),
     505: ('HTTP Version Not Supported', 'Cannot fulfill request.'),
 }
-url = Request("http://baidu.com")
+url = "http://e68web01.itomtest.com"
+user = 'devtest999'
+password = 'devtest999'
 
 
-class Test_url:
-    def __init__(self):
-        self.url = url
+def timer(func):
+    def wrapper():
+        start_time = time.time()
+        func()
+        stop_time = time.time()
+        print('Runtime: %s' % (stop_time - start_time))
 
-    def get(self, url):
-        try:
-            response = urlopen(self.url)
-        except HTTPError as e:
-            print('Error code: ', e.code, responses[e.code])
-        except URLError as e:
-            print('Reason: ', e.reason)
-        else:
-            print(responses[response.status])
+    return wrapper
 
 
-u1 = Test_url()
-u1.get(url)
+auth = urllib.request.HTTPPasswordMgrWithDefaultRealm()
+auth.add_password(None, url, user, password)
+auth_handler = urllib.request.HTTPBasicAuthHandler(auth)
+opener = urllib.request.build_opener(auth_handler)
+
+
+@timer
+def check_http():
+    try:
+        response = opener.open(url)
+    except urllib.request.HTTPError as e:
+        print('Error code: ', e.code, responses[e.code])
+    except urllib.request.URLError as e:
+        print('Reason: ', e.reason)
+    else:
+        print(responses[response.status])
+
+
+check_http()
