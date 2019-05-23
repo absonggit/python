@@ -43,9 +43,9 @@ responses = {
     504: ('Gateway Timeout', 'The gateway server did not receive a timely response'),
     505: ('HTTP Version Not Supported', 'Cannot fulfill request.'),
 }
-url = "http://e68web01.itomtest.com"
-user = 'devtest999'
-password = 'devtest999'
+url = "https://baidu.com"
+user = 'username'
+password = 'password'
 
 
 def timer(func):
