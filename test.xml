@@ -1,0 +1,160 @@
+<maven2-moduleset plugin="maven-plugin@3.2">
+  <actions />
+  <description />
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>10</daysToKeep>
+        <numToKeep>30</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <net.uaznia.lukanus.hudson.plugins.gitparameter.GitParameterDefinition plugin="git-parameter@0.9.6">
+          <name>GIT_TAG</name>
+          <description>【温馨提示】找到需要更新的GIT_TAG后，点击一下，再执行任务。</description>
+          <uuid>f32ef30c-a17f-4aa4-a883-96ebd3f3b96d</uuid>
+          <type>PT_TAG</type>
+          <branch />
+          <tagFilter>*</tagFilter>
+          <branchFilter>.*</branchFilter>
+          <sortMode>NONE</sortMode>
+          <defaultValue />
+          <selectedValue>NONE</selectedValue>
+          <quickFilterEnabled>true</quickFilterEnabled>
+          <listSize>5</listSize>
+        </net.uaznia.lukanus.hudson.plugins.gitparameter.GitParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>MODULE_NAME</name>
+          <description>【温馨提示】需要选择编译的模块名。</description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string />
+              <string>dc-api-game</string>
+              <string>dc-api-personal</string>
+              <string>dc-api-preferential</string>
+              <string>dc-api-web</string>
+              <string>dc-api-risk</string>
+              <string>dc-api-friend</string>
+              <string>dc-api-pay</string>
+              <string>dc-api-office</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.1">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>http://xxxxxx/DC-API-2018.git</url>
+        <credentialsId>25dc92c1-be7d-4c37-a73a-362e16862448</credentialsId>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>${GIT_TAG}</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list" />
+    <extensions />
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers />
+  <concurrentBuild>false</concurrentBuild>
+  <rootModule>
+    <groupId>com.dc</groupId>
+    <artifactId>dc</artifactId>
+  </rootModule>
+  <goals>clean package -Dmaven.test.skip=true</goals>
+  <aggregatorStyleBuild>true</aggregatorStyleBuild>
+  <incrementalBuild>false</incrementalBuild>
+  <ignoreUpstremChanges>true</ignoreUpstremChanges>
+  <ignoreUnsuccessfulUpstreams>false</ignoreUnsuccessfulUpstreams>
+  <archivingDisabled>false</archivingDisabled>
+  <siteArchivingDisabled>false</siteArchivingDisabled>
+  <fingerprintingDisabled>false</fingerprintingDisabled>
+  <resolveDependencies>false</resolveDependencies>
+  <processPlugins>true</processPlugins>
+  <mavenValidationLevel>-1</mavenValidationLevel>
+  <runHeadless>false</runHeadless>
+  <disableTriggerDownstreamProjects>false</disableTriggerDownstreamProjects>
+  <blockTriggerWhenBuilding>false</blockTriggerWhenBuilding>
+  <settings class="jenkins.mvn.DefaultSettingsProvider" />
+  <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider" />
+  <reporters />
+  <publishers>
+    <jenkins.plugins.slack.SlackNotifier plugin="slack@2.20">
+      <baseUrl />
+      <teamDomain />
+      <authToken />
+      <tokenCredentialId />
+      <botUser>false</botUser>
+      <room />
+      <startNotification>true</startNotification>
+      <notifySuccess>true</notifySuccess>
+      <notifyAborted>true</notifyAborted>
+      <notifyNotBuilt>true</notifyNotBuilt>
+      <notifyUnstable>true</notifyUnstable>
+      <notifyRegression>true</notifyRegression>
+      <notifyFailure>true</notifyFailure>
+      <notifyBackToNormal>true</notifyBackToNormal>
+      <notifyRepeatedFailure>true</notifyRepeatedFailure>
+      <includeTestSummary>false</includeTestSummary>
+      <includeFailedTests>false</includeFailedTests>
+      <commitInfoChoice>NONE</commitInfoChoice>
+      <includeCustomMessage>false</includeCustomMessage>
+      <customMessage />
+      <customMessageSuccess />
+      <customMessageAborted />
+      <customMessageNotBuilt />
+      <customMessageUnstable />
+      <customMessageFailure />
+    </jenkins.plugins.slack.SlackNotifier>
+  </publishers>
+  <buildWrappers />
+  <prebuilders>
+    <hudson.tasks.Shell>
+      <command>[ $MODULE_NAME ] || {
+	echo "No modules are specified to compile, please try again."
+	exit 1
+}
+
+all_module=(dc-api-game dc-api-personal dc-api-preferential dc-api-web dc-api-risk dc-api-friend dc-api-pay dc-api-office)
+
+exclude_module=(${all_module[@]/$MODULE_NAME})
+
+for word in ${exclude_module[@]};
+do
+   sed -i -e "/$word/d" dc-api/pom.xml
+done
+</command>
+    </hudson.tasks.Shell>
+  </prebuilders>
+  <postbuilders>
+    <hudson.tasks.Shell>
+      <command>## 判断是否赋值TAG
+
+[ $GIT_TAG ] || {
+echo "The value of GITLAB tag is not fetched"
+exit 1
+}
+
+</command>
+    </hudson.tasks.Shell>
+  </postbuilders>
+  <runPostStepsIfResult>
+    <name>SUCCESS</name>
+    <ordinal>0</ordinal>
+    <color>BLUE</color>
+    <completeBuild>true</completeBuild>
+  </runPostStepsIfResult>
+</maven2-moduleset>
