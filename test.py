@@ -37,3 +37,4 @@ for value in "sss zioc ioc zkcop nouuyq sss".split(" "):
         dict2[value] += 1
 
 print(dict2[keyword])
+print(sum / len(ages))
