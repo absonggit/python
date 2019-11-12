@@ -3,3 +3,6 @@ sum = 0
 for i in ages:
     sum += i
 print(sum / len(ages))
+
+ages.extend([66])
+print(ages)
