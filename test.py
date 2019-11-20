@@ -121,3 +121,45 @@
 # quit_button.pack()
 
 # win.mainloop()
+
+
+from functools import reduce
+# map() 
+
+def int2word(num):
+    return {0:"zero", 1:"one", 2:"two", 3:"three", 4:"four", 5:"five", 6:"six", 7:"seven", 8:"eight", 9:"nine"}[num]
+
+list1 = [1,3,5,7,9,2,4,6,8]
+res = map(int2word, list1)
+print(list(res))
+
+print(list(map(lambda x, y: x + y, [1, 3, 5, 7, 9], [2, 4, 6, 8, 10])))
+
+# reduce()
+
+def mySum(num1,num2):
+    return num1 + num2
+
+list2 = list(range(1, 101))
+
+print(reduce(mySum, list2))
+
+# map() & reduce()
+
+def str2int(string):
+    def r(x, y):
+        return x * 10 + y
+    
+    def m(chr):
+        return {"0":0, "1":1, "2":2, "3":3, "4":4, "5":5, "6":6, "7":7, "8":8, "9":9}[chr]
+    
+    return reduce(r, map(m, list(string)))
+
+print(str2int("1234567"))
+
+#filter()
+
+def  evenNum(num):
+    return num % 2 == 0
+
+print(list(filter(evenNum, [1,2,3,4,5,6])))
