@@ -65,6 +65,8 @@ class myDB(object):
         return count
 
 conn = myDB("2.2.2.200", 3306, "root", "123456", "mydb", "utf8")
+conn.insert("insert into mydb.aaa (id ,name) values (1, 'tom')")
+conn.insert("insert into mydb.aaa (id ,name) values (2, 'jerry')")
 data = conn.select_all("select * from mydb.aaa")
 for i in data:
-    print(data[0][0], data[0][1])
+    print(i)
